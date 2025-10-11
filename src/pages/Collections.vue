@@ -72,21 +72,22 @@
       </div>
     </div>
 
-    <!-- Products in Selected Category -->
-    <div v-else>
-      <div
-        class="flex items-center justify-between mb-8 max-w-[1440px] mx-auto mt-20 px-6"
-      >
-        <button
-          @click="clearCategory"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
-        >
-          ← Back to Collections
-        </button>
-        <h3 class="text-2xl font-semibold text-gray-900">
-          {{ activeCategory }}
-        </h3>
-      </div>
+<!-- Products in Selected Category -->
+<div v-else>
+  <div
+    class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 max-w-[1440px] mx-auto mt-10 px-4 sm:px-6"
+  >
+    <button
+      @click="clearCategory"
+      class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-100 rounded-full sm:px-4 sm:text-sm hover:bg-gray-200"
+    >
+      ← Back to Collections
+    </button>
+    <h3 class="mt-4 text-xl font-semibold text-gray-900 sm:mt-0 sm:text-2xl">
+      {{ activeCategory }}
+    </h3>
+  </div>
+</div>
 
       <div
         class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-[1440px] mx-auto mt-25 px-6 mb-25"
