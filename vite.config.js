@@ -18,7 +18,7 @@ export default defineConfig({
       input: {
         home: "index.html",
         shop: "shop.html",
-        contact: "contact.html",
+        collections: "collections.html",
       },
     },
   },
