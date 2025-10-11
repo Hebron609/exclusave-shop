@@ -2,7 +2,7 @@
   <div>
     <Header />
 
-    <!-- Shop Banner -->
+    <!--Shop-banner-->
     <section
       class="bg-[#eeeaf3] py-16 mx-3 sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-6 sm:px-6"
     >
@@ -25,9 +25,8 @@
       <p
         class="max-w-xl mx-auto mt-4 text-base text-gray-600 sm:max-w-2xl sm:mt-6 sm:text-lg"
       >
-        Shop smarter with ExcluSave — where quality meets affordability.
-        Explore all categories and enjoy premium shopping experiences designed
-        just for you.
+        Shop smarter with ExcluSave — where quality meets affordability. Explore all
+        categories and enjoy premium shopping experiences designed just for you.
       </p>
     </section>
 
@@ -48,7 +47,7 @@
                 'w-full text-left px-3 py-2 rounded-lg transition-all duration-300',
                 activeCategory === category
                   ? 'bg-black text-white font-semibold shadow-sm scale-[1.02]'
-                  : 'hover:bg-gray-100',
+                  : 'hover:bg-gray-100'
               ]"
             >
               {{ category }}
@@ -71,9 +70,7 @@
             :alt="product.name"
             class="object-contain w-full h-56 mb-4 rounded-2xl"
           />
-          <h3 class="text-lg font-semibold text-gray-900">
-            {{ product.name }}
-          </h3>
+          <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
           <p class="text-sm text-gray-600">{{ product.category }}</p>
           <p class="font-medium text-gray-800">{{ product.price }}</p>
           <a
@@ -92,61 +89,63 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import Header from "@/components/Header.vue";
-import Footer from "@/components/Footer.vue";
+import { ref, computed } from 'vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
 
-const phoneNumber = "233591063119"; // <-- replace with your WhatsApp number
-const categories = ["All Products", "Technology", "Home", "Mobile Phones"];
-const activeCategory = ref("All Products");
+// ✅ Import images properly so Vite + Vercel bundle them correctly
+import handheldFan from '@/assets/img/white-portable-handheld-fan.png'
+import studyLamp from '@/assets/img/stylish-table-lamp.png'
+import blender from '@/assets/img/portable-personal-blender.png'
+import earbuds from '@/assets/img/wireless-headphones-case-white-isolated-background.png'
 
-// ✅ FIXED IMAGE PATHS (for Vercel)
+const phoneNumber = '233591063119'
+const categories = ['All Products', 'Technology', 'Home', 'Mobile Phones']
+const activeCategory = ref('All Products')
+
+// ✅ Products with imported images (just like your working Collections.vue)
 const products = [
   {
     id: 1,
-    name: "Portable Handheld Fan",
-    category: "Technology",
-    price: "GH₵ 59.99",
-    image: new URL("../assets/img/white-portable-handheld-fan.png", import.meta.url).href,
+    name: 'Portable Handheld Fan',
+    category: 'Technology',
+    price: 'GH₵ 59.99',
+    image: handheldFan,
   },
   {
     id: 2,
-    name: "Study Led Lamp",
-    category: "Technology",
-    price: "GH₵ 129.99",
-    image: new URL("../assets/img/stylish-table-lamp.png", import.meta.url).href,
+    name: 'Study Led Lamp',
+    category: 'Technology',
+    price: 'GH₵ 129.99',
+    image: studyLamp,
   },
   {
     id: 3,
-    name: "Portable personal blender",
-    category: "Home",
-    price: "GH₵ 39.99",
-    image: new URL("../assets/img/portable-personal-blender.png", import.meta.url).href,
+    name: 'Portable Personal Blender',
+    category: 'Home',
+    price: 'GH₵ 39.99',
+    image: blender,
   },
   {
     id: 4,
-    name: "Wireless Earbuds",
-    category: "Technology",
-    price: "GH₵ 49.99",
-    image: new URL("../assets/img/wireless-headphones-case-white-isolated-background.png", import.meta.url).href,
+    name: 'Wireless Earbuds',
+    category: 'Technology',
+    price: 'GH₵ 49.99',
+    image: earbuds,
   },
-];
+]
 
 const setActiveCategory = (category) => {
-  activeCategory.value = category;
-};
+  activeCategory.value = category
+}
 
 const filteredProducts = computed(() => {
-  if (activeCategory.value === "All Products") return products;
-  return products.filter(
-    (product) => product.category === activeCategory.value
-  );
-});
+  if (activeCategory.value === 'All Products') return products
+  return products.filter((product) => product.category === activeCategory.value)
+})
 </script>
 
 <style scoped>
-.font-inter {
-  font-family: "Inter", sans-serif;
-}
-</style>
 
+
+</style>
