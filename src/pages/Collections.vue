@@ -2,33 +2,32 @@
   <div>
     <Header />
 
-    <!--Collection-banner-->
-<section
-  class="bg-[#eeeaf3] mx-3 py-16 sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-4 sm:px-6"
->
-  <!-- Tag -->
-  <span
-    class="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full shadow-sm sm:text-sm sm:px-4"
-  >
-    Collections
-  </span>
+    <!-- Collection Banner -->
+    <section
+      class="bg-[#eeeaf3] mx-3 py-16 sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-4 sm:px-6"
+    >
+      <span
+        class="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full shadow-sm sm:text-sm sm:px-4"
+      >
+        Collections
+      </span>
 
-  <!-- Heading -->
-  <h1
-    class="mt-4 text-3xl font-semibold leading-tight text-gray-900 sm:mt-6 sm:text-4xl md:text-5xl"
-  >
-    Discover Exclusive Collections<br />
-    Tailored for You.
-  </h1>
+      <h1
+        class="mt-4 text-3xl font-semibold leading-tight text-gray-900 sm:mt-6 sm:text-4xl md:text-5xl"
+      >
+        Discover Exclusive Collections<br />
+        Tailored for You.
+      </h1>
 
-  <!-- Description -->
-  <p class="max-w-xl mx-auto mt-4 text-base text-gray-600 sm:max-w-2xl sm:mt-6 sm:text-lg">
-    Explore handpicked product collections curated by ExcluSave — making it
-    effortless for you to find premium essentials that match your lifestyle.
-  </p>
-</section>
+      <p
+        class="max-w-xl mx-auto mt-4 text-base text-gray-600 sm:max-w-2xl sm:mt-6 sm:text-lg"
+      >
+        Explore handpicked product collections curated by ExcluSave — making it
+        effortless for you to find premium essentials that match your lifestyle.
+      </p>
+    </section>
 
-    <!-- Show collection cards when no category is active -->
+    <!-- Collections Grid -->
     <div
       v-if="!activeCategory"
       class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-[1440px] mx-auto py-25 px-6"
@@ -43,21 +42,14 @@
           {{ collection.name }}
         </h3>
 
-        <!-- Image container with flex centering -->
         <div class="flex items-center justify-center h-[300px]">
           <img
             :src="collection.image"
             :alt="collection.name"
-            :class="[
-              'object-contain transition-all duration-300 w-full h-[220px] rounded-xl ',
-              collection.name === 'Home'
-                ? 'w-[380px] h-[580px] mb-28'
-                : 'w-[300px] h-[300px]',
-            ]"
+            class="object-contain transition-all duration-300 w-full h-[250px] rounded-xl"
           />
         </div>
 
-        <!-- Arrow -->
         <button
           @click.stop="selectCategory(collection.name)"
           class="absolute p-2 transition bg-white rounded-full shadow bottom-6 right-6 hover:bg-gray-100"
@@ -80,7 +72,7 @@
       </div>
     </div>
 
-    <!-- Show products when a category is selected -->
+    <!-- Products in Selected Category -->
     <div v-else>
       <div
         class="flex items-center justify-between mb-8 max-w-[1440px] mx-auto mt-20 px-6"
@@ -104,40 +96,32 @@
           :key="product.id"
           class="relative flex flex-col p-6 transition shadow cursor-pointer group bg-gray-50 rounded-2xl hover:shadow-lg"
         >
-<!-- Image container with flex centering -->
-<div class="relative flex items-center justify-center h-[250px]">
-  <!-- Product Image -->
-  <img
-    :src="product.images[imageIndexes[index]]"
-    :alt="product.name"
-    class="h-[250px] object-contain rounded-xl mb-4 transition-all duration-700 ease-in-out group-hover:scale-105"
-  />
+          <!-- Image container with dots overlay -->
+          <div class="relative flex items-center justify-center h-[250px]">
+            <img
+              :src="product.images[imageIndexes[index]]"
+              :alt="product.name"
+              class="h-[250px] object-contain rounded-xl mb-4 transition-all duration-700 ease-in-out group-hover:scale-105"
+            />
+            <div
+              class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white/50 backdrop-blur-sm px-2 py-1 rounded-full"
+            >
+              <span
+                v-for="(img, i) in product.images"
+                :key="i"
+                :class="[ 'w-2.5 h-2.5 rounded-full transition-all duration-300',
+                  imageIndexes[index] === i
+                    ? 'bg-red-600 scale-110 shadow-[0_0_6px_2px_rgba(34,197,94,0.5)]'
+                    : 'bg-gray-300'
+                ]"
+              ></span>
+            </div>
+          </div>
 
-  <!-- Image Indicator Dots (Overlay) -->
-  <div
-    class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white/50 backdrop-blur-sm px-2 py-1 rounded-full"
-  >
-    <span
-      v-for="(img, i) in product.images"
-      :key="i"
-      :class="[
-        'w-2.5 h-2.5 rounded-full transition-all duration-300',
-        imageIndexes[index] === i
-          ? 'bg-red-600 scale-110 shadow-[0_0_6px_2px_rgba(34,197,94,0.5)]'
-          : 'bg-gray-300',
-      ]"
-    ></span>
-  </div>
-</div>
-
-
-          <h3 class="text-lg font-semibold text-gray-900">
-            {{ product.name }}
-          </h3>
+          <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
           <p class="text-sm text-gray-600">{{ product.category }}</p>
           <p class="font-medium text-gray-800">{{ product.price }}</p>
 
-          <!-- Tooltip -->
           <div
             class="absolute bottom-[110%] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-900 text-white text-sm px-4 py-2 rounded-lg whitespace-nowrap transition-opacity duration-300"
           >
@@ -167,21 +151,28 @@ import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 
+// ✅ Importing images directly ensures they load on Vercel
+import homeIcon from "@/assets/img/home-icon-exclu-save-removebg-preview.png";
+import techIcon from "@/assets/img/headphone-removebg-preview.png";
+import mobileIcon from "@/assets/img/mobilephones-removebg-preview.png";
+
+import fan1 from "@/assets/img/white-portable-handheld-fan.png";
+import lamp1 from "@/assets/img/stylish-table-lamp.png";
+import blender1 from "@/assets/img/portable-personal-blender.png";
+import iphoneFront from "@/assets/img/Iphone 15promax.jpg";
+import iphoneSide from "@/assets/img/Iphone15promax-side.jpg";
+import iphoneBack from "@/assets/img/Iphone15promax-back.jpg";
+import samsung1 from "@/assets/img/samsung-phone.jpg";
+import samsung2 from "@/assets/img/samsung-phone-2.jpg";
+import samsung3 from "@/assets/img/samsung-phone-3.jpg";
+import earbuds from "@/assets/img/wireless-headphones-case-white-isolated-background.png";
+
 const phoneNumber = "233501234567";
 
 const collections = ref([
-  {
-    name: "Home",
-    image: "/src/assets/img/home-icon-exclu-save-removebg-preview.png",
-  },
-  {
-    name: "Technology",
-    image: "/src/assets/img/headphone-removebg-preview.png",
-  },
-  {
-    name: "Mobile Phones",
-    image: "/src/assets/img/mobilephones-removebg-preview.png",
-  },
+  { name: "Home", image: homeIcon },
+  { name: "Technology", image: techIcon },
+  { name: "Mobile Phones", image: mobileIcon },
 ]);
 
 const products = ref([
@@ -190,70 +181,46 @@ const products = ref([
     name: "Portable Handheld Fan",
     category: "Technology",
     price: "GH₵ 59.99",
-    images: [
-      "/src/assets/img/white-portable-handheld-fan.png",
-      "/src/assets/img/white-portable-handheld-fan.png",
-      "/src/assets/img/white-portable-handheld-fan.png",
-    ],
+    images: [fan1, fan1, fan1],
   },
   {
     id: 2,
     name: "Study Led Lamp",
     category: "Technology",
     price: "GH₵ 129.99",
-    images: [
-      "/src/assets/img/stylish-table-lamp.png",
-    "/src/assets/img/stylish-table-lamp.png",
-      "/src/assets/img/stylish-table-lamp.png",
-    ],
+    images: [lamp1, lamp1, lamp1],
   },
   {
     id: 3,
     name: "Portable Blender",
     category: "Home",
     price: "GH₵ 39.99",
-    images: [
-      "/src/assets/img/portable-personal-blender.png",
-      "/src/assets/img/portable-personal-blender.png",
-      "/src/assets/img/portable-personal-blender.png",
-    ],
+    images: [blender1, blender1, blender1],
   },
   {
     id: 4,
     name: "iPhone 15 Pro Max",
     category: "Mobile Phones",
     price: "GH₵ 4599.99",
-    images: [
-      "/src/assets/img/Iphone 15promax.jpg",
-      "/src/assets/img/Iphone15promax-side.jpg",
-      "/src/assets/img/Iphone15promax-back.jpg",
-    ],
+    images: [iphoneFront, iphoneSide, iphoneBack],
   },
   {
     id: 5,
     name: "Samsung Galaxy S22",
     category: "Mobile Phones",
     price: "GH₵ 4899.99",
-    images: [
-      "/src/assets/img/samsung-phone.jpg",
-      "/src/assets/img/samsung-phone-2.jpg",
-      "/src/assets/img/samsung-phone-3.jpg",
-    ],
+    images: [samsung1, samsung2, samsung3],
   },
   {
     id: 6,
     name: "Wireless Earbuds",
     category: "Technology",
     price: "GH₵ 49.99",
-    images: [
-      "/src/assets/img/wireless-headphones-case-white-isolated-background.png",
-      "/src/assets/img/wireless-headphones-case-white-isolated-background.png",
-      "/src/assets/img/wireless-headphones-case-white-isolated-background.png",
-    ],
+    images: [earbuds, earbuds, earbuds],
   },
 ]);
 
-// --- Image rotation setup ---
+// Image auto-rotation
 const imageIndexes = ref(products.value.map(() => 0));
 let intervalId;
 
@@ -263,16 +230,13 @@ onMounted(() => {
       const total = products.value[i].images.length;
       return (index + 1) % total;
     });
-  }, 3000); // change every 3s
+  }, 3000);
 });
 
-onBeforeUnmount(() => {
-  clearInterval(intervalId);
-});
+onBeforeUnmount(() => clearInterval(intervalId));
 
-// --- Category logic ---
+// Category filtering logic
 const activeCategory = ref(null);
-
 const filteredProducts = computed(() =>
   products.value.filter((p) => p.category === activeCategory.value)
 );
@@ -282,24 +246,11 @@ const selectCategory = (category) => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-const clearCategory = () => {
-  activeCategory.value = null;
-};
-
-const bannerDescription = computed(() => {
-  if (!activeCategory.value) {
-    return "Use this page to group your products into simple collections, making it easy for customers to explore.";
-  }
-
-  switch (activeCategory.value) {
-    case "Technology":
-      return "Discover cutting-edge tech gadgets designed to simplify your life.";
-    case "Home":
-      return "Enhance your home experience with stylish, practical accessories.";
-    case "Mobile Phones":
-      return "Shop premium mobile devices at unbeatable prices.";
-    default:
-      return "Explore products handpicked for your lifestyle.";
-  }
-});
+const clearCategory = () => (activeCategory.value = null);
 </script>
+
+<style scoped>
+.font-montserrat {
+  font-family: "Montserrat", sans-serif;
+}
+</style>
