@@ -192,8 +192,8 @@ const products = ref([
     price: "GH₵ 59.99",
     images: [
       "/src/assets/img/white-portable-handheld-fan.png",
-      "/src/assets/img/white-portable-handheld-fan-2.png",
-      "/src/assets/img/white-portable-handheld-fan-3.png",
+      "/src/assets/img/white-portable-handheld-fan.png",
+      "/src/assets/img/white-portable-handheld-fan.png",
     ],
   },
   {
@@ -203,8 +203,8 @@ const products = ref([
     price: "GH₵ 129.99",
     images: [
       "/src/assets/img/stylish-table-lamp.png",
-      "/src/assets/img/stylish-table-lamp-2.png",
-      "/src/assets/img/stylish-table-lamp-3.png",
+    "/src/assets/img/stylish-table-lamp.png",
+      "/src/assets/img/stylish-table-lamp.png",
     ],
   },
   {
@@ -214,8 +214,8 @@ const products = ref([
     price: "GH₵ 39.99",
     images: [
       "/src/assets/img/portable-personal-blender.png",
-      "/src/assets/img/portable-personal-blender-2.png",
-      "/src/assets/img/portable-personal-blender-3.png",
+      "/src/assets/img/portable-personal-blender.png",
+      "/src/assets/img/portable-personal-blender.png",
     ],
   },
   {
@@ -247,8 +247,8 @@ const products = ref([
     price: "GH₵ 49.99",
     images: [
       "/src/assets/img/wireless-headphones-case-white-isolated-background.png",
-      "/src/assets/img/wireless-headphones-side.png",
-      "/src/assets/img/wireless-headphones-box.png",
+      "/src/assets/img/wireless-headphones-case-white-isolated-background.png",
+      "/src/assets/img/wireless-headphones-case-white-isolated-background.png",
     ],
   },
 ]);
