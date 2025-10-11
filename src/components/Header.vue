@@ -118,7 +118,7 @@
           </li>
           <a
             href="shop.html"
-            class="px-5 py-2 text-center text-white transition bg-blue-600 rounded-full hover:bg-blue-700"
+            class="px-2 py-1 text-center text-white transition bg-black rounded-full hover:bg-red-900"
           >
             Shop Now
           </a>

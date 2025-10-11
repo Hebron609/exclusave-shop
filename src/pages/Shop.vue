@@ -2,25 +2,25 @@
   <div>
     <Header />
 
-    <!--Shop-banner-->
-    <section class="bg-[#eeeaf3] py-24 rounded-3xl text-center font-montserrat max-w-[1440px] mx-auto mt-30 px-6">
-    <!-- Tag -->
-    <span class="bg-gray-100 text-gray-700 text-sm font-medium px-4 py-1.5 rounded-full shadow-sm">
-      Shop
-    </span>
+<!--Shop-banner-->
+<section class="bg-[#eeeaf3] py-16 mx-3  sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-6 sm:px-6">
+  <!-- Tag -->
+  <span class="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full shadow-sm sm:text-sm sm:px-4">
+    Shop
+  </span>
 
-    <!-- Heading -->
-    <h1 class="mt-6 text-4xl font-semibold leading-tight text-gray-900 md:text-5xl">
-      Discover exclusive deals<br />
-      and top products in one place.
-    </h1>
+  <!-- Heading -->
+  <h1 class="mt-4 text-3xl font-semibold leading-tight text-gray-900 sm:mt-6 sm:text-4xl md:text-5xl">
+    Discover exclusive deals<br />
+    and top products in one place.
+  </h1>
 
-    <!-- Description -->
-    <p class="max-w-2xl mx-auto mt-6 text-lg text-gray-600">
-      Shop smarter with ExcluSave — where quality meets affordability. 
-      Explore all categories and enjoy premium shopping experiences designed just for you.
-    </p>
-  </section>
+  <!-- Description -->
+  <p class="max-w-xl mx-auto mt-4 text-base text-gray-600 sm:max-w-2xl sm:mt-6 sm:text-lg">
+    Shop smarter with ExcluSave — where quality meets affordability. 
+    Explore all categories and enjoy premium shopping experiences designed just for you.
+  </p>
+</section>
 
   
  <!-- Product Section -->

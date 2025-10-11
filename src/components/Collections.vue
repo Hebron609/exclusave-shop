@@ -1,34 +1,34 @@
 <template>
   <section class="max-w-[1440px] mx-auto px-6 py-16 font-montserrat">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-10">
-      <div>
-        <h2 class="text-2xl font-semibold text-gray-900">Our Collections</h2>
-        <p class="text-gray-500">
-          Showcase all of the different collections you have to offer.
-        </p>
-      </div>
-      <a
-        href="/collections.html"
-        class="flex items-center gap-1 p-2 font-medium text-gray-900 transition rounded-xl hover:bg-gray-100"
-      >
-        View All
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-5 h-5"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-          />
-        </svg>
-      </a>
-    </div>
+    <div class="flex flex-col items-start justify-between mb-10 md:flex-row md:items-center">
+  <div>
+    <h2 class="text-2xl font-semibold text-gray-900">Our Collections</h2>
+    <p class="text-gray-500">
+      Showcase all of the different collections you have to offer.
+    </p>
+  </div>
+  <a
+    href="/collections.html"
+    class="flex items-center gap-1 p-2 mt-4 font-medium text-gray-900 transition md:mt-0 rounded-xl hover:bg-gray-100"
+  >
+    View All
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-5 h-5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+      />
+    </svg>
+  </a>
+</div>
 
     <!-- Cards -->
     <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
