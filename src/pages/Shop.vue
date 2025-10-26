@@ -2,26 +2,23 @@
   <div>
     <Header />
 
-    <!--Shop-banner-->
+    <!-- Shop Banner -->
     <section
-      class="bg-[#eeeaf3] py-16 mx-3 sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-6 sm:px-6"
+      class="bg-[#eeeaf3] mx-3 py-16 sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-4 sm:px-6"
     >
-      <!-- Tag -->
       <span
         class="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full shadow-sm sm:text-sm sm:px-4"
       >
         Shop
       </span>
 
-      <!-- Heading -->
       <h1
         class="mt-4 text-3xl font-semibold leading-tight text-gray-900 sm:mt-6 sm:text-4xl md:text-5xl"
       >
-        Discover exclusive deals<br />
-        and top products in one place.
+        Discover Exclusive Deals<br />
+        and Top Products in One Place.
       </h1>
 
-      <!-- Description -->
       <p
         class="max-w-xl mx-auto mt-4 text-base text-gray-600 sm:max-w-2xl sm:mt-6 sm:text-lg"
       >
@@ -30,11 +27,11 @@
       </p>
     </section>
 
-    <!-- Product Section -->
+    <!-- Category Filter + Product Grid -->
     <section
       class="max-w-[1440px] mx-auto px-6 py-16 font-inter grid grid-cols-1 md:grid-cols-4 gap-8"
     >
-      <!-- Category Sidebar -->
+      <!-- Sidebar -->
       <aside
         class="p-6 bg-white shadow md:col-span-1 rounded-2xl h-fit md:sticky md:top-28"
       >
@@ -56,96 +53,126 @@
         </ul>
       </aside>
 
-      <!-- Product Grid -->
+      <!-- Products -->
       <div
         class="grid grid-cols-1 gap-8 md:col-span-3 sm:grid-cols-2 lg:grid-cols-3"
       >
         <div
           v-for="product in filteredProducts"
           :key="product.id"
-          class="p-6 transition bg-gray-50 rounded-2xl hover:shadow-lg"
+          class="relative p-6 transition cursor-pointer bg-gray-50 rounded-2xl hover:shadow-lg"
+          @click="openProduct(product)"
         >
-          <img
-            :src="product.image"
-            :alt="product.name"
-            class="object-contain w-full h-56 mb-4 rounded-2xl"
-          />
+          <!-- Product Image -->
+          <div class="relative">
+            <img
+              :src="getCurrentImage(product)"
+              :alt="product.name"
+              class="object-contain w-full h-56 mb-4 rounded-2xl"
+            />
+            <!-- Image dots -->
+            <div
+              v-if="product.images && product.images.length > 1"
+              class="absolute flex gap-1 transform -translate-x-1/2 bottom-3 left-1/2"
+            >
+              <span
+                v-for="(img, i) in product.images"
+                :key="i"
+                class="w-2 h-2 rounded-full"
+                :class="i === currentImageIndex[product.id] ? 'bg-black' : 'bg-gray-300'"
+              ></span>
+            </div>
+          </div>
+
+          <!-- Product Info -->
           <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
           <p class="text-sm text-gray-600">{{ product.category }}</p>
           <p class="font-medium text-gray-800">{{ product.price }}</p>
-          <a
-            :href="`https://wa.me/${phoneNumber}?text=Hi! I’d like to order the ${product.name} for ${product.price}`"
-            target="_blank"
-            class="block w-full py-2 mt-4 text-center text-white bg-black rounded-full hover:bg-gray-800"
-          >
-            Order via WhatsApp
-          </a>
+          <p class="mt-1 text-xs text-gray-500">Click for details</p>
         </div>
       </div>
     </section>
+
+    <!-- ✅ Reusable Product Modal -->
+    <ProductModal
+      v-if="selectedProduct"
+      :isOpen="!!selectedProduct"
+      :product="selectedProduct"
+      :phoneNumber="phoneNumber"
+      @close="closeProduct"
+    />
 
     <Footer />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import Header from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
+import ProductModal from "@/components/ProductModal.vue";
+import { products as productData } from "@/data/products.js";
 
-// ✅ Import images properly so Vite + Vercel bundle them correctly
-import handheldFan from '@/assets/img/white-portable-handheld-fan.png'
-import studyLamp from '@/assets/img/stylish-table-lamp.png'
-import blender from '@/assets/img/portable-personal-blender.png'
-import earbuds from '@/assets/img/wireless-headphones-case-white-isolated-background.png'
+const phoneNumber = "233591063119";
+const categories = ["All Products", "Technology", "Home", "Mobile Phones"];
+const activeCategory = ref("All Products");
+const products = ref(productData);
+const selectedProduct = ref(null);
 
-const phoneNumber = '233591063119'
-const categories = ['All Products', 'Technology', 'Home', 'Mobile Phones']
-const activeCategory = ref('All Products')
+// Track image rotation per product
+const currentImageIndex = ref({});
+products.value.forEach((p) => (currentImageIndex.value[p.id] = 0));
 
-// ✅ Products with imported images (just like your working Collections.vue)
-const products = [
-  {
-    id: 1,
-    name: 'Portable Handheld Fan',
-    category: 'Technology',
-    price: 'GH₵ 59.99',
-    image: handheldFan,
-  },
-  {
-    id: 2,
-    name: 'Study Led Lamp',
-    category: 'Technology',
-    price: 'GH₵ 129.99',
-    image: studyLamp,
-  },
-  {
-    id: 3,
-    name: 'Portable Personal Blender',
-    category: 'Home',
-    price: 'GH₵ 39.99',
-    image: blender,
-  },
-  {
-    id: 4,
-    name: 'Wireless Earbuds',
-    category: 'Technology',
-    price: 'GH₵ 49.99',
-    image: earbuds,
-  },
-]
+// Auto-change images every 3s
+let interval;
+onMounted(() => {
+  interval = setInterval(() => {
+    products.value.forEach((p) => {
+      if (p.images && p.images.length > 1) {
+        currentImageIndex.value[p.id] =
+          (currentImageIndex.value[p.id] + 1) % p.images.length;
+      }
+    });
+  }, 3000);
+});
+onBeforeUnmount(() => clearInterval(interval));
 
-const setActiveCategory = (category) => {
-  activeCategory.value = category
-}
+// Get current image for each product
+const getCurrentImage = (product) => {
+  if (product.images && product.images.length > 0)
+    return product.images[currentImageIndex.value[product.id]];
+  return product.image;
+};
 
+// Filter logic
 const filteredProducts = computed(() => {
-  if (activeCategory.value === 'All Products') return products
-  return products.filter((product) => product.category === activeCategory.value)
-})
+  if (activeCategory.value === "All Products") return products.value;
+  return products.value.filter((p) => p.category === activeCategory.value);
+});
+const setActiveCategory = (category) => (activeCategory.value = category);
+
+// Modal controls
+const openProduct = (product) => (selectedProduct.value = product);
+const closeProduct = () => (selectedProduct.value = null);
 </script>
 
 <style scoped>
+.font-montserrat {
+  font-family: "Montserrat", sans-serif;
+}
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
 </style>
