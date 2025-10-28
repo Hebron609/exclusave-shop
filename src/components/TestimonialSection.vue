@@ -65,25 +65,11 @@
       <div class="flex justify-center gap-1 mb-2 text-yellow-500 sm:mb-1">
         <span v-for="star in current.rating" :key="star">★</span>
       </div>
-      <p class="text-xs text-gray-500 sm:text-sm">
+      <p class="pb-8 text-xs text-gray-500 sm:text-sm">
         {{ current.name }} — {{ current.role }}
       </p>
 
-      <!-- Client Logos -->
-      <div class="mt-6 sm:mt-10">
-        <p class="mb-4 text-xs text-gray-400 sm:text-sm">
-          Feature client logos to build trust and credibility for your brand:
-        </p>
-        <div class="flex flex-wrap justify-center gap-4 sm:gap-6 opacity-70">
-          <img
-            v-for="(logo, i) in clientLogos"
-            :key="i"
-            :src="logo"
-            alt="Client logo"
-            class="h-4 sm:h-6"
-          />
-        </div>
-      </div>
+      
     </div>
   </section>
 </template>

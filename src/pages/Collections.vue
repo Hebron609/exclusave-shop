@@ -83,29 +83,39 @@
         >
           ← Back to Collections
         </button>
-        <h3 class="mt-4 text-xl font-semibold text-gray-900 sm:mt-0 sm:text-2xl">
+        <h3
+          class="mt-4 text-xl font-semibold text-gray-900 sm:mt-0 sm:text-2xl"
+        >
           {{ activeCategory }}
         </h3>
       </div>
 
       <!-- Product Grid -->
+      <div v-if="loading" class="mt-12 text-lg text-center text-gray-500">
+        Loading products...
+      </div>
+
       <div
+        v-else
         class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-[1440px] mx-auto mt-25 px-6 mb-25"
       >
         <div
-          v-for="(product, index) in filteredProducts"
+          v-for="product in filteredProducts"
           :key="product.id"
           class="relative flex flex-col p-6 transition shadow cursor-pointer group bg-gray-50 rounded-2xl hover:shadow-lg"
           @click="openProduct(product)"
         >
-          <!-- Image Slider with Dots -->
+          <!-- Product Image Carousel -->
           <div class="relative flex items-center justify-center h-[250px]">
             <img
-              :src="product.images[imageIndexes[index]]"
+              :src="getCurrentImage(product)"
               :alt="product.name"
               class="h-[250px] object-contain rounded-xl mb-4 transition-all duration-700 ease-in-out group-hover:scale-105"
             />
+
+            <!-- Dots -->
             <div
+              v-if="product.images && product.images.length > 1"
               class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white/50 backdrop-blur-sm px-2 py-1 rounded-full"
             >
               <span
@@ -113,61 +123,39 @@
                 :key="i"
                 :class="[
                   'w-2.5 h-2.5 rounded-full transition-all duration-300',
-                  imageIndexes[index] === i
-                    ? 'bg-green-600 scale-110 shadow-[0_0_6px_2px_rgba(34,197,94,0.5)]'
-                    : 'bg-gray-300',
+                  currentImageIndex[product.id] === i
+                    ? 'bg-black scale-110 shadow-[0_0_6px_2px_rgba(34,197,94,0.5)]'
+                    : 'bg-gray-300'
                 ]"
               ></span>
             </div>
           </div>
 
-          <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
+          <h3 class="text-lg font-semibold text-gray-900">
+            {{ product.name }}
+          </h3>
           <p class="text-sm text-gray-600">{{ product.category }}</p>
-          <p class="font-medium text-gray-800">{{ product.price }}</p>
+          <p class="font-medium text-gray-800">
+            {{
+              typeof product.price === "number"
+                ? product.price.toFixed(2)
+                : product.price
+            }}
+          </p>
+
+          <p class="mt-1 text-xs text-gray-500">Click for details</p>
         </div>
       </div>
     </div>
 
-    <!-- Product Modal -->
-    <div
+    <!-- ✅ Product Modal -->
+    <ProductModal
       v-if="selectedProduct"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-    >
-      <div
-        class="relative w-full max-w-md p-6 bg-white shadow-2xl rounded-3xl animate-fadeIn"
-      >
-        <button
-          @click="closeProduct"
-          class="absolute text-gray-600 top-3 right-3 hover:text-black"
-        >
-          ✕
-        </button>
-
-        <img
-          :src="selectedProduct.images[0]"
-          :alt="selectedProduct.name"
-          class="object-contain w-full h-56 mb-4 rounded-2xl"
-        />
-        <h2 class="mb-2 text-2xl font-semibold text-gray-900">
-          {{ selectedProduct.name }}
-        </h2>
-        <p class="mb-2 text-sm text-gray-700">
-          Category: {{ selectedProduct.category }}
-        </p>
-        <p class="mb-4 text-lg font-semibold text-gray-900">
-          {{ selectedProduct.price }}
-        </p>
-
-        <!-- WhatsApp Order Button -->
-        <a
-          :href="`https://wa.me/${phoneNumber}?text=Hi! I’d like to order the ${selectedProduct.name} for ${selectedProduct.price}`"
-          target="_blank"
-          class="block w-full py-3 mt-4 text-center text-white transition bg-green-600 rounded-full hover:bg-green-700"
-        >
-          Order via WhatsApp
-        </a>
-      </div>
-    </div>
+      :isOpen="!!selectedProduct"
+      :product="selectedProduct"
+      :phoneNumber="phoneNumber"
+      @close="closeProduct"
+    />
 
     <Footer />
   </div>
@@ -177,9 +165,11 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import { products } from "@/data/products.js"; // ✅ Unified source
+import ProductModal from "@/components/ProductModal.vue";
+import { db } from "@/firebase";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
-// ✅ Category collections
+// ✅ Collection category images
 import homeIcon from "@/assets/img/home-icon-exclu-save-removebg-preview.png";
 import techIcon from "@/assets/img/headphone-removebg-preview.png";
 import mobileIcon from "@/assets/img/mobilephones-removebg-preview.png";
@@ -192,54 +182,85 @@ const collections = ref([
   { name: "Mobile Phones", image: mobileIcon },
 ]);
 
-// ✅ Image rotation
-const imageIndexes = ref(products.map(() => 0));
-let intervalId;
+// ✅ Data
+const products = ref([]);
+const loading = ref(true);
+const activeCategory = ref(null);
+const selectedProduct = ref(null);
 
-onMounted(() => {
-  intervalId = setInterval(() => {
-    imageIndexes.value = imageIndexes.value.map((index, i) => {
-      const total = products[i].images.length;
-      return (index + 1) % total;
+// ✅ Image carousel logic
+const currentImageIndex = ref({});
+let interval;
+const startImageRotation = () => {
+  interval = setInterval(() => {
+    products.value.forEach((p) => {
+      if (p.images && p.images.length > 1) {
+        currentImageIndex.value[p.id] =
+          ((currentImageIndex.value[p.id] || 0) + 1) % p.images.length;
+      }
     });
   }, 3000);
+};
+const getCurrentImage = (product) => {
+  if (product.images && product.images.length > 0) {
+    const index = currentImageIndex.value[product.id] || 0;
+    return product.images[index];
+  }
+  return product.image;
+};
+
+// ✅ Fetch products from Firestore
+const fetchProducts = async () => {
+  try {
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    products.value = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (err) {
+    console.error("Error loading products:", err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchProducts().then(() => startImageRotation());
+  const params = new URLSearchParams(window.location.search);
+  const categoryFromQuery = params.get("category");
+  if (categoryFromQuery) activeCategory.value = categoryFromQuery;
 });
 
-onBeforeUnmount(() => clearInterval(intervalId));
+onBeforeUnmount(() => {
+  clearInterval(interval);
+  selectedProduct.value = null;
+});
 
-// ✅ Category filtering
-const activeCategory = ref(null);
+// ✅ Category filter logic
 const filteredProducts = computed(() =>
-  products.filter((p) => p.category === activeCategory.value)
+  activeCategory.value
+    ? products.value.filter(
+        (p) =>
+          p.category &&
+          p.category.toLowerCase() === activeCategory.value.toLowerCase()
+      )
+    : []
 );
+
 const selectCategory = (category) => {
   activeCategory.value = category;
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 const clearCategory = () => (activeCategory.value = null);
 
-// ✅ Modal logic
-const selectedProduct = ref(null);
+// ✅ Product modal
 const openProduct = (product) => (selectedProduct.value = product);
 const closeProduct = () => (selectedProduct.value = null);
 </script>
 
-
 <style scoped>
 .font-montserrat {
   font-family: "Montserrat", sans-serif;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
 }
 </style>

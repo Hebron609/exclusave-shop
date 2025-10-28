@@ -19,6 +19,8 @@ export default defineConfig({
         home: "index.html",
         shop: "shop.html",
         collections: "collections.html",
+        addProduct: "./add-product.html",
+        products: path.resolve(__dirname, 'products.html'),
       },
     },
   },
