@@ -31,8 +31,30 @@
       </a>
     </div>
 
+    <!-- Skeleton Loader -->
+    <div
+      v-if="loading"
+      class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    >
+      <div
+        v-for="n in 4"
+        :key="n"
+        class="p-4 transition bg-gray-100 sm:p-6 rounded-2xl animate-pulse"
+      >
+        <div class="w-full h-48 bg-gray-300 rounded-2xl sm:h-60"></div>
+        <div class="mt-3 space-y-2 sm:mt-4">
+          <div class="w-3/4 h-4 bg-gray-300 rounded"></div>
+          <div class="w-1/2 h-3 bg-gray-200 rounded"></div>
+          <div class="w-1/3 h-3 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Product Grid -->
-    <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div
+      v-else
+      class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    >
       <div
         v-for="product in products"
         :key="product.id"
@@ -40,7 +62,7 @@
       >
         <div class="relative overflow-hidden rounded-2xl">
           <img
-            :src="product.image"
+            :src="product.images?.[0] || '/fallback.jpg'"
             :alt="product.name"
             class="object-contain w-full h-48 transition-transform duration-300 sm:h-60 group-hover:scale-105"
           />
@@ -83,50 +105,42 @@
 </template>
 
 <script setup>
-// ✅ Replace with your WhatsApp business number
+import { ref, onMounted } from "vue";
+import { db } from "@/firebase";
+import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
+
 const phoneNumber = "233591063119";
 
-// ✅ Import images correctly — Vite will optimize and bundle them for Vercel
-import fan from '@/assets/img/white-portable-handheld-fan.png'
-import lamp from '@/assets/img/stylish-table-lamp.png'
-import blender from '@/assets/img/portable-personal-blender.png'
-import earbuds from '@/assets/img/wireless-headphones-case-white-isolated-background.png'
+const products = ref([]);
+const loading = ref(true);
 
-// ✅ Products array using imported image variables
-const products = [
-  {
-    id: 1,
-    name: "Portable Handheld Fan",
-    category: "Technology",
-    price: "GH₵ 59.99",
-    image: fan,
-  },
-  {
-    id: 2,
-    name: "Study Led Lamp",
-    category: "Technology",
-    price: "GH₵ 129.99",
-    image: lamp,
-  },
-  {
-    id: 3,
-    name: "Portable personal blender",
-    category: "Home",
-    price: "GH₵ 39.99",
-    image: blender,
-  },
-  {
-    id: 4,
-    name: "Wireless Earbuds",
-    category: "Technology",
-    price: "GH₵ 49.99",
-    image: earbuds,
-  },
-];
+onMounted(() => {
+  const productsRef = collection(db, "products");
+  const q = query(productsRef, orderBy("createdAt", "desc"), limit(4));
+
+  onSnapshot(q, (snapshot) => {
+    products.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    loading.value = false;
+  });
+});
 </script>
 
 <style scoped>
-.font-inter {
-  font-family: "Inter", sans-serif;
+
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
 }
 </style>
