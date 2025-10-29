@@ -1,27 +1,27 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
-import path from "path"; // <-- you need this import
+import path from "path";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
-
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'), // now this works
-    },
-  },
 
   build: {
     rollupOptions: {
       input: {
-        home: "index.html",
-        shop: "shop.html",
-        collections: "collections.html",
-        addProduct: "./add-product.html",
-        products: path.resolve(__dirname, 'products.html'),
+        main: path.resolve(__dirname, "index.html"),
+        shop: path.resolve(__dirname, "shop.html"),
+        addProduct: path.resolve(__dirname, "add-product.html"),
+        productList: path.resolve(__dirname, "products.html"),
+        collections: path.resolve(__dirname, "collections.html"),
+        support: path.resolve(__dirname, "support.html"),
       },
+    },
+  },
+
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
