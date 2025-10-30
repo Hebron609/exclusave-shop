@@ -2,7 +2,7 @@
   <div>
     <Header />
 
-    <!-- Shop Banner -->
+    <!-- 🛍️ Shop Banner -->
     <section
       class="bg-[#eeeaf3] mx-3 py-16 sm:py-24 rounded-3xl text-center font-montserrat max-w-[1440px] lg:mx-auto mt-20 px-4 sm:px-6"
     >
@@ -28,7 +28,7 @@
       </p>
     </section>
 
-    <!-- Category Filter + Product Grid -->
+    <!-- 🧭 Category Filter + Product Grid -->
     <section
       class="max-w-[1440px] mx-auto px-6 py-16 font-inter grid grid-cols-1 md:grid-cols-4 gap-8"
     >
@@ -41,7 +41,7 @@
           <li v-for="category in categories" :key="category">
             <button
               @click="setActiveCategory(category)"
-              :class="[
+              :class="[ 
                 'w-full text-left px-3 py-2 rounded-lg transition-all duration-300',
                 activeCategory === category
                   ? 'bg-black text-white font-semibold shadow-sm scale-[1.02]'
@@ -54,17 +54,34 @@
         </ul>
       </aside>
 
-      <!-- Products -->
+      <!-- Product Grid -->
       <div
         class="grid grid-cols-1 gap-8 md:col-span-3 sm:grid-cols-2 lg:grid-cols-3"
       >
-        <div
-          v-if="loading"
-          class="py-20 text-center text-gray-500 col-span-full"
-        >
+        <!-- 🔄 Loading -->
+        <div v-if="loading" class="py-20 text-center text-gray-500 col-span-full">
           Loading products...
         </div>
 
+        <!-- 🚫 No Products Found -->
+        <div
+          v-else-if="filteredProducts.length === 0"
+          class="flex flex-col items-center justify-center py-20 text-center col-span-full"
+        >
+          <div
+            class="flex items-center justify-center w-20 h-20 mb-6 text-white bg-red-500 rounded-full"
+          >
+            <i class="text-3xl fa-solid fa-box-open"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800">
+            No products found in "{{ activeCategory }}"
+          </h3>
+          <p class="mt-2 text-gray-500">
+            We’re adding more exclusive items soon — check back later!
+          </p>
+        </div>
+
+        <!-- ✅ Product Cards -->
         <div
           v-else
           v-for="product in filteredProducts"
@@ -110,13 +127,12 @@
                 : product.price
             }}
           </p>
-
           <p class="mt-1 text-xs text-gray-500">Click for details</p>
         </div>
       </div>
     </section>
 
-    <!-- ✅ Reusable Product Modal -->
+    <!-- Product Modal -->
     <ProductModal
       v-if="selectedProduct"
       :isOpen="!!selectedProduct"
@@ -137,35 +153,22 @@ import ProductModal from "@/components/ProductModal.vue";
 import { db } from "@/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
-const testFirestore = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "products"));
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, doc.data());
-    });
-  } catch (error) {
-    console.error("Firestore test error:", error);
-  }
-};
-
-testFirestore();
-
 const phoneNumber = "233591063119";
 
 // Sidebar categories
 const categories = ["All Products", "Technology", "Home", "Mobile Phones"];
 const activeCategory = ref("All Products");
 
-// Products from Firestore
+// Product data
 const products = ref([]);
 const loading = ref(true);
-
-// Product modal
 const selectedProduct = ref(null);
+
+// Modal actions
 const openProduct = (product) => (selectedProduct.value = product);
 const closeProduct = () => (selectedProduct.value = null);
 
-// Fetch products
+// Fetch products from Firestore
 const fetchProducts = async () => {
   try {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
@@ -225,20 +228,5 @@ onBeforeUnmount(() => clearInterval(interval));
 <style scoped>
 .font-montserrat {
   font-family: "Montserrat", sans-serif;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
 }
 </style>

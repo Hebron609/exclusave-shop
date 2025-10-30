@@ -90,11 +90,47 @@
         </h3>
       </div>
 
-      <!-- Product Grid -->
+      <!-- Loading -->
       <div v-if="loading" class="mt-12 text-lg text-center text-gray-500">
         Loading products...
       </div>
 
+      <!-- ✅ No Products Message -->
+      <div
+        v-else-if="filteredProducts.length === 0"
+        class="flex flex-col items-center justify-center h-[350px] text-center  rounded-2xl  max-w-[1440px] mx-auto mt-10 px-6"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mb-5 text-red-500 w-14 h-14"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 3h18M4 7h16l-1.5 9H5.5L4 7zm2.5 12h11M9 11v4m6-4v4"
+          />
+        </svg>
+
+        <h3 class="text-lg font-semibold text-gray-800">
+          No products available yet in
+          <span class="font-bold text-red-500">{{ activeCategory }}</span>.
+        </h3>
+        <p class="mt-2 text-sm text-gray-500">
+          Please check back later or explore other collections.
+        </p>
+        <button
+          @click="clearCategory"
+          class="px-5 py-2 mt-6 text-sm font-medium text-white transition bg-black rounded-full hover:bg-red-800"
+        >
+          Browse Collections
+        </button>
+      </div>
+
+      <!-- ✅ Product Grid -->
       <div
         v-else
         class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-[1440px] mx-auto mt-25 px-6 mb-25"
@@ -124,7 +160,7 @@
                 :class="[
                   'w-2.5 h-2.5 rounded-full transition-all duration-300',
                   currentImageIndex[product.id] === i
-                    ? 'bg-black scale-110 shadow-[0_0_6px_2px_rgba(34,197,94,0.5)]'
+                    ? 'bg-black scale-110 shadow-[0_0_6px_2px_rgba(126,58,242,0.5)]'
                     : 'bg-gray-300'
                 ]"
               ></span>
