@@ -4,7 +4,10 @@
       
       <!-- Left Section (Brand & Socials) -->
       <div class="flex flex-col gap-6">
-        <h2 class="text-2xl font-semibold text-gray-900">ExcluSave_</h2>
+        <!-- Logo -->
+      <a href="index.html" class="text-3xl font-bold text-red-600">
+        Exclu<span class="text-black">Save</span>
+      </a>
         <p class="max-w-sm text-gray-600">
           Discover exclusive deals and top-quality products at unbeatable prices. 
           Save smart, shop better with ExcluSave.
