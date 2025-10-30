@@ -1,5 +1,5 @@
 <template>
-  <section class="text-gray-900 bg-white pt-25 lg:pt-40">
+  <section class="overflow-x-hidden text-gray-900 bg-white pt-25 lg:pt-40">
     <div class="max-w-[1440px] mx-auto px-6">
       <!-- Text -->
       <div>

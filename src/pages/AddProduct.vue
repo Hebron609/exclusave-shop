@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl p-8 mx-auto my-20 bg-white shadow-lg rounded-2xl">
+  <div class="max-w-2xl p-8 mx-auto my-20 overflow-x-hidden bg-white shadow-lg rounded-2xl">
     <h2 class="mb-6 text-2xl font-bold text-center">Add New Product</h2>
 
     <form @submit.prevent="addProduct" class="space-y-5">

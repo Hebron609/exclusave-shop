@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 font-montserrat">
+  <div class="min-h-screen overflow-x-hidden bg-gray-50 font-montserrat">
     <!-- Header -->
     <header class="p-6 bg-white shadow-md">
       <h1 class="text-3xl font-bold text-gray-800">ExcluSave Store</h1>

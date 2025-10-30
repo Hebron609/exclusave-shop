@@ -1,5 +1,5 @@
 <template>
-  <section class="max-w-[1440px] mx-auto px-6 py-16 font-inter">
+  <section class="max-w-[1440px] mx-auto px-6 py-16 font-inter overflow-x-hidden">
     <!-- Header -->
     <div class="flex flex-col items-start justify-between mb-10 md:flex-row">
       <div>
