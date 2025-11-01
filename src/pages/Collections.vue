@@ -98,7 +98,7 @@
       <!-- ✅ No Products Message -->
       <div
         v-else-if="filteredProducts.length === 0"
-        class="flex flex-col items-center justify-center h-[350px] text-center  rounded-2xl  max-w-[1440px] mx-auto mt-10 px-6"
+        class="flex flex-col items-center justify-center h-[350px] text-center rounded-2xl max-w-[1440px] mx-auto mt-10 px-6"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@
         </button>
       </div>
 
-      <!-- ✅ Product Grid -->
+      <!-- ✅ Product Grid (Optimized + Full Image) -->
       <div
         v-else
         class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-[1440px] mx-auto mt-25 px-6 mb-25"
@@ -138,21 +138,22 @@
         <div
           v-for="product in filteredProducts"
           :key="product.id"
-          class="relative flex flex-col p-6 transition shadow cursor-pointer group bg-gray-50 rounded-2xl hover:shadow-lg"
+          class="relative flex flex-col p-6 transition duration-300 shadow-sm cursor-pointer group bg-gray-50 rounded-3xl hover:shadow-lg hover:-translate-y-1"
           @click="openProduct(product)"
         >
-          <!-- Product Image Carousel -->
-          <div class="relative flex items-center justify-center h-[250px]">
+          <!-- Product Image -->
+          <div class="relative w-full h-[260px] overflow-hidden rounded-2xl">
             <img
               :src="getCurrentImage(product)"
               :alt="product.name"
-              class="h-[250px] object-contain rounded-xl mb-4 transition-all duration-700 ease-in-out group-hover:scale-105"
+              loading="lazy"
+              class="object-cover w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-105"
             />
 
             <!-- Dots -->
             <div
               v-if="product.images && product.images.length > 1"
-              class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white/50 backdrop-blur-sm px-2 py-1 rounded-full"
+              class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white/60 backdrop-blur-sm px-2 py-1 rounded-full"
             >
               <span
                 v-for="(img, i) in product.images"
@@ -160,26 +161,27 @@
                 :class="[
                   'w-2.5 h-2.5 rounded-full transition-all duration-300',
                   currentImageIndex[product.id] === i
-                    ? 'bg-black scale-110 shadow-[0_0_6px_2px_rgba(126,58,242,0.5)]'
+                    ? 'bg-black scale-110 shadow-[0_0_6px_2px_rgba(0,0,0,0.4)]'
                     : 'bg-gray-300'
                 ]"
               ></span>
             </div>
           </div>
 
-          <h3 class="text-lg font-semibold text-gray-900">
-            {{ product.name }}
-          </h3>
-          <p class="text-sm text-gray-600">{{ product.category }}</p>
-          <p class="font-medium text-gray-800">
-            {{
-              typeof product.price === "number"
-                ? product.price.toFixed(2)
-                : product.price
-            }}
-          </p>
-
-          <p class="mt-1 text-xs text-gray-500">Click for details</p>
+          <div class="mt-4">
+            <h3 class="text-lg font-semibold text-gray-900 truncate">
+              {{ product.name }}
+            </h3>
+            <p class="text-sm text-gray-600">{{ product.category }}</p>
+            <p class="font-medium text-gray-800">
+              {{
+                typeof product.price === 'number'
+                  ? product.price.toFixed(2)
+                  : product.price
+              }}
+            </p>
+            <p class="mt-1 text-xs text-gray-500">Click for details</p>
+          </div>
         </div>
       </div>
     </div>

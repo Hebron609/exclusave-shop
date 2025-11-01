@@ -1,5 +1,5 @@
 <template>
-  <section class="max-w-[1440px] mx-auto px-6 py-16 font-inter overflow-x-hidden">
+  <section class="max-w-[1440px] mx-auto px-4 sm:px-6 py-16 font-inter overflow-x-hidden">
     <!-- Header -->
     <div class="flex flex-col items-start justify-between mb-10 md:flex-row">
       <div>
@@ -34,7 +34,7 @@
     <!-- Skeleton Loader -->
     <div
       v-if="loading"
-      class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4"
     >
       <div
         v-for="n in 4"
@@ -53,19 +53,23 @@
     <!-- Product Grid -->
     <div
       v-else
-      class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 place-items-center"
     >
       <div
         v-for="product in products"
         :key="product.id"
-        class="p-4 transition sm:p-6 group bg-gray-50 rounded-2xl hover:shadow-lg"
+        class="flex flex-col justify-between w-full h-full p-4 transition duration-300 border border-gray-200 sm:p-6 bg-gray-50 rounded-2xl sm:rounded-3xl group sm:hover:shadow-lg sm:hover:-translate-y-1"
       >
-        <div class="relative overflow-hidden rounded-2xl">
+        <!-- Image -->
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl">
           <img
             :src="product.images?.[0] || '/fallback.jpg'"
             :alt="product.name"
-            class="object-contain w-full h-48 transition-transform duration-300 sm:h-60 group-hover:scale-105"
+            class="block w-[95%] mx-auto h-52 sm:w-full sm:h-60 lg:h-64 object-cover transition-transform duration-300 sm:group-hover:scale-105 rounded-2xl sm:rounded-3xl"
+            loading="lazy"
           />
+
+          <!-- WhatsApp Button -->
           <a
             :href="`https://wa.me/${phoneNumber}?text=Hi! I’d like to order the ${product.name} for ${product.price}`"
             target="_blank"
@@ -88,14 +92,15 @@
           </a>
         </div>
 
-        <div class="mt-3 space-y-1 sm:mt-4">
+        <!-- Product Details -->
+        <div class="flex flex-col justify-end flex-1 mt-3 space-y-1 text-left sm:mt-4">
           <h3 class="text-lg font-semibold text-gray-900 sm:text-xl">
             {{ product.name }}
           </h3>
           <p class="text-sm font-semibold text-gray-600 sm:text-md">
             {{ product.category }}
           </p>
-          <p class="text-sm font-medium text-gray-800 sm:text-md">
+          <p class="font-medium text-gray-800 text-md sm:text-lg">
             {{ product.price }}
           </p>
         </div>
@@ -110,7 +115,6 @@ import { db } from "@/firebase";
 import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 
 const phoneNumber = "233591063119";
-
 const products = ref([]);
 const loading = ref(true);
 
@@ -129,18 +133,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
-
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
     opacity: 0.5;
   }
 }
-
 .animate-pulse {
   animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Equal product card height for consistent alignment */
+@media (min-width: 768px) {
+  .group {
+    height: 100%;
+  }
 }
 </style>

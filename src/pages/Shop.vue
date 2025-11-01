@@ -41,7 +41,7 @@
           <li v-for="category in categories" :key="category">
             <button
               @click="setActiveCategory(category)"
-              :class="[ 
+              :class="[
                 'w-full text-left px-3 py-2 rounded-lg transition-all duration-300',
                 activeCategory === category
                   ? 'bg-black text-white font-semibold shadow-sm scale-[1.02]'
@@ -86,15 +86,16 @@
           v-else
           v-for="product in filteredProducts"
           :key="product.id"
-          class="relative p-6 transition cursor-pointer bg-gray-50 rounded-2xl hover:shadow-lg"
+          class="relative p-6 transition-all duration-300 bg-white border border-gray-100 shadow-sm cursor-pointer group rounded-3xl hover:shadow-lg hover:-translate-y-1"
           @click="openProduct(product)"
         >
           <!-- Product Image -->
-          <div class="relative">
+          <div class="relative w-full h-56 mb-4 overflow-hidden rounded-2xl">
             <img
               :src="getCurrentImage(product)"
               :alt="product.name"
-              class="object-contain w-full h-56 mb-4 rounded-2xl"
+              class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
             />
 
             <!-- Image Dots -->
@@ -116,11 +117,11 @@
           </div>
 
           <!-- Product Info -->
-          <h3 class="text-lg font-semibold text-gray-900">
+          <h3 class="text-lg font-semibold text-gray-900 truncate">
             {{ product.name }}
           </h3>
           <p class="text-sm text-gray-600">{{ product.category }}</p>
-          <p class="font-medium text-gray-800">
+          <p class="mt-1 font-medium text-gray-800">
             {{
               typeof product.price === "number"
                 ? product.price.toFixed(2)
