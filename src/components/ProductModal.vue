@@ -16,11 +16,13 @@
       </button>
 
       <!-- Product Image Carousel -->
-      <div class="relative flex items-center justify-center h-72 lg:h-80 bg-gray-50 rounded-xl">
-        <!-- Use transition + key so Vue replaces the <img> element and triggers a fade -->
+      <div
+        class="relative flex items-center justify-center h-72 lg:h-80 bg-gray-50 rounded-xl cursor-zoom-in"
+        @click="openImageViewer"
+      >
         <transition name="fade" mode="out-in">
           <img
-            :key="currentIndex"                      
+            :key="currentIndex"
             :src="currentImage"
             :alt="product?.name || 'product image'"
             class="object-contain h-full transition-all duration-700 rounded-xl"
@@ -34,7 +36,7 @@
           <span
             v-for="(img, i) in product.images"
             :key="i"
-            :class="[ 
+            :class="[
               'w-2 h-2 rounded-full transition-colors',
               i === currentIndex ? 'bg-black' : 'bg-gray-300'
             ]"
@@ -45,9 +47,7 @@
       <!-- Product Details -->
       <div class="p-4 space-y-2 text-left">
         <h2 class="text-2xl font-semibold text-gray-900">{{ product?.name }}</h2>
-        <p class="text-sm text-gray-500">
-          Condition: {{ product?.condition || 'New' }}
-        </p>
+        <p class="text-sm text-gray-500">Condition: {{ product?.condition || 'New' }}</p>
         <p class="text-lg font-medium text-gray-800">{{ product?.price }}</p>
         <p class="text-sm leading-relaxed text-gray-600">{{ product?.description }}</p>
 
@@ -61,6 +61,45 @@
         </a>
       </div>
     </div>
+
+    <!-- Fullscreen Image Viewer -->
+    <transition name="fade">
+      <div
+        v-if="showViewer"
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-black/90"
+        @click.self="closeImageViewer"
+      >
+        <button
+          @click="closeImageViewer"
+          class="absolute text-3xl font-bold text-white cursor-pointer top-5 right-6 hover:opacity-80"
+        >
+          ✕
+        </button>
+
+        <button
+          v-if="images.length > 1"
+          @click.stop="prevImage"
+          class="absolute text-3xl text-white cursor-pointer left-5 hover:opacity-80" 
+        >
+          ‹
+        </button>
+
+        <img
+          :src="currentImage"
+          class="max-h-[90%] max-w-[90%] object-contain rounded-lg select-none"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchMove"
+        />
+
+        <button
+          v-if="images.length > 1"
+          @click.stop="nextImage"
+          class="absolute text-3xl text-white cursor-pointer right-5 hover:opacity-80"
+        >
+          ›
+        </button>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -76,16 +115,13 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const currentIndex = ref(0);
-let interval = null;
-
-// ✅ Use a local reactive copy of the images to ensure Vue reacts properly
 const images = ref([]);
+let interval = null;
 
 watch(
   () => props.product,
   (newProduct) => {
     if (newProduct) {
-      // Defensive copy (forces Vue to track changes)
       images.value = newProduct.images?.length
         ? [...newProduct.images]
         : newProduct.image
@@ -105,7 +141,6 @@ const currentImage = computed(() => {
 const startImageRotation = () => {
   stopImageRotation();
   if (images.value.length <= 1) return;
-
   interval = setInterval(() => {
     currentIndex.value = (currentIndex.value + 1) % images.value.length;
   }, 3000);
@@ -123,8 +158,10 @@ watch(
       await nextTick();
       currentIndex.value = 0;
       startImageRotation();
+      document.addEventListener("keydown", handleKeydown);
     } else {
       stopImageRotation();
+      document.removeEventListener("keydown", handleKeydown);
     }
   }
 );
@@ -132,10 +169,56 @@ watch(
 onMounted(() => {
   if (props.isOpen) startImageRotation();
 });
-
-onBeforeUnmount(stopImageRotation);
+onBeforeUnmount(() => {
+  stopImageRotation();
+  document.removeEventListener("keydown", handleKeydown);
+});
 
 const closeModal = () => emit("close");
+
+/* 🔍 Image Viewer Logic */
+const showViewer = ref(false);
+const openImageViewer = () => {
+  stopImageRotation();
+  showViewer.value = true;
+};
+const closeImageViewer = () => {
+  showViewer.value = false;
+  startImageRotation();
+};
+
+const nextImage = () => {
+  currentIndex.value = (currentIndex.value + 1) % images.value.length;
+};
+const prevImage = () => {
+  currentIndex.value =
+    (currentIndex.value - 1 + images.value.length) % images.value.length;
+};
+
+/* 🧭 Swipe Gestures */
+let touchStartX = 0;
+const handleTouchStart = (e) => {
+  touchStartX = e.touches[0].clientX;
+};
+const handleTouchMove = (e) => {
+  const diff = e.touches[0].clientX - touchStartX;
+  if (Math.abs(diff) > 70) {
+    diff > 0 ? prevImage() : nextImage();
+    touchStartX = e.touches[0].clientX;
+  }
+};
+
+/* ⌨ Keyboard Events */
+const handleKeydown = (e) => {
+  if (!props.isOpen) return;
+  if (showViewer.value) {
+    if (e.key === "ArrowRight") nextImage();
+    if (e.key === "ArrowLeft") prevImage();
+    if (e.key === "Escape") closeImageViewer();
+  } else if (e.key === "Escape") {
+    closeModal();
+  }
+};
 </script>
 
 <style scoped>
@@ -153,17 +236,12 @@ const closeModal = () => emit("close");
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* fade transition for the image swap */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.45s ease;
 }
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0.1;
-}
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
+  opacity: 0;
 }
 </style>
