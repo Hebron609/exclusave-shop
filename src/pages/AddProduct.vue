@@ -20,10 +20,25 @@
         <label class="block mb-1 font-medium text-gray-700">Description</label>
         <textarea
           v-model="description"
-          placeholder="Enter product description"
+          placeholder="Memory: 1TB, Graphics Card: 8GB, Display: 14 inch"
           class="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-black"
           required
         ></textarea>
+      </div>
+
+      <!-- Condition -->
+      <div>
+        <label class="block mb-1 font-medium text-gray-700">Condition</label>
+        <select
+          v-model="condition"
+          class="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-black"
+          required
+        >
+          <option value="">Select Condition</option>
+          <option>New</option>
+          <option>Used</option>
+          <option>Refurbished</option>
+        </select>
       </div>
 
       <!-- Category -->
@@ -93,6 +108,7 @@
       <h3 class="mb-4 text-xl font-semibold text-gray-900">Preview</h3>
       <p><strong>Name:</strong> {{ name }}</p>
       <p><strong>Description:</strong> {{ description }}</p>
+      <p><strong>Condition:</strong> {{ condition }}</p>
       <p><strong>Category:</strong> {{ category }}</p>
       <p><strong>Price:</strong> {{ price }}</p>
       <div class="flex flex-wrap gap-2 mt-2">
@@ -111,11 +127,10 @@
     </p>
 
     <p class="mt-6 text-center">
-  <a href="./products.html" class="text-indigo-600 hover:underline">
-    View all products
-  </a>
-</p>
-
+      <a href="./products.html" class="text-indigo-600 hover:underline">
+        View all products
+      </a>
+    </p>
   </div>
 </template>
 
@@ -124,29 +139,26 @@ import { ref } from "vue";
 import { db } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-// 🔹 Replace these with your Cloudinary credentials
-const CLOUD_NAME = "dw8olqtqi"; // e.g. exclusave
-const UPLOAD_PRESET = "exclusave_upload"; // e.g. exclusave_upload
+const CLOUD_NAME = "dw8olqtqi";
+const UPLOAD_PRESET = "exclusave_upload";
 
 const name = ref("");
 const description = ref("");
 const category = ref("");
 const price = ref("");
+const condition = ref("");
 const images = ref([]);
 const imagePreviews = ref([]);
 const loading = ref(false);
 const message = ref("");
 
-// Handle file selection
 const handleFileChange = (e) => {
   images.value = Array.from(e.target.files);
   imagePreviews.value = images.value.map((file) => URL.createObjectURL(file));
 };
 
-// Upload to Cloudinary (multiple images)
 const uploadImagesToCloudinary = async (files) => {
   const uploadedUrls = [];
-
   for (const file of files) {
     const formData = new FormData();
     formData.append("file", file);
@@ -163,17 +175,16 @@ const uploadImagesToCloudinary = async (files) => {
     const data = await response.json();
     uploadedUrls.push(data.secure_url);
   }
-
   return uploadedUrls;
 };
 
-// Add product to Firestore
 const addProduct = async () => {
   if (
     !name.value ||
     !description.value ||
     !category.value ||
     !price.value ||
+    !condition.value ||
     images.value.length === 0
   ) {
     alert("Please fill all fields and select at least one image!");
@@ -183,26 +194,23 @@ const addProduct = async () => {
   loading.value = true;
 
   try {
-    // 🔹 Upload images to Cloudinary
     const uploadedUrls = await uploadImagesToCloudinary(images.value);
-
-    // 🔹 Save product to Firestore
     await addDoc(collection(db, "products"), {
       name: name.value,
       description: description.value,
       category: category.value,
       price: price.value,
+      condition: condition.value,
       images: uploadedUrls,
       createdAt: serverTimestamp(),
     });
 
     message.value = "✅ Product added successfully!";
-
-    // 🔹 Reset form
     name.value = "";
     description.value = "";
     category.value = "";
     price.value = "";
+    condition.value = "";
     images.value = [];
     imagePreviews.value = [];
   } catch (error) {

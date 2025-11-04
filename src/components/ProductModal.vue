@@ -10,7 +10,7 @@
       <!-- Close Button -->
       <button
         @click="closeModal"
-        class="absolute z-10 text-2xl text-gray-500 top-3 right-3 hover:text-black"
+        class="absolute z-10 text-2xl text-gray-500 cursor-pointer top-3 right-3 hover:text-black"
       >
         ✕
       </button>
@@ -49,7 +49,13 @@
         <h2 class="text-2xl font-semibold text-gray-900">{{ product?.name }}</h2>
         <p class="text-sm text-gray-500">Condition: {{ product?.condition || 'New' }}</p>
         <p class="text-lg font-medium text-gray-800">{{ product?.price }}</p>
-        <p class="text-sm leading-relaxed text-gray-600">{{ product?.description }}</p>
+
+        <!-- Formatted Description -->
+        <div class="space-y-1 text-sm leading-relaxed text-gray-600">
+          <template v-for="(line, index) in formattedDescription" :key="index">
+            <p>{{ line }}</p>
+          </template>
+        </div>
 
         <!-- WhatsApp Button -->
         <a
@@ -79,7 +85,7 @@
         <button
           v-if="images.length > 1"
           @click.stop="prevImage"
-          class="absolute text-3xl text-white cursor-pointer left-5 hover:opacity-80" 
+          class="absolute p-6 text-5xl text-white rounded-full cursor-pointer bg-gray-800/50 hover:bg-gray-800 left-4"
         >
           ‹
         </button>
@@ -94,7 +100,7 @@
         <button
           v-if="images.length > 1"
           @click.stop="nextImage"
-          class="absolute text-3xl text-white cursor-pointer right-5 hover:opacity-80"
+          class="absolute p-6 text-5xl text-white rounded-full cursor-pointer bg-gray-800/50 hover:bg-gray-800 right-4"
         >
           ›
         </button>
@@ -118,6 +124,7 @@ const currentIndex = ref(0);
 const images = ref([]);
 let interval = null;
 
+/* Watch Product Prop */
 watch(
   () => props.product,
   (newProduct) => {
@@ -132,12 +139,22 @@ watch(
   { immediate: true }
 );
 
-const currentImage = computed(() => {
-  return images.value.length > 0
+/* Computed */
+const currentImage = computed(() =>
+  images.value.length > 0
     ? images.value[currentIndex.value % images.value.length]
-    : "";
+    : ""
+);
+
+const formattedDescription = computed(() => {
+  if (!props.product?.description) return [];
+  return props.product.description
+    .split(/,|\n/)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
 });
 
+/* Auto Image Rotation */
 const startImageRotation = () => {
   stopImageRotation();
   if (images.value.length <= 1) return;
@@ -145,12 +162,12 @@ const startImageRotation = () => {
     currentIndex.value = (currentIndex.value + 1) % images.value.length;
   }, 3000);
 };
-
 const stopImageRotation = () => {
   if (interval) clearInterval(interval);
   interval = null;
 };
 
+/* Watch Modal State */
 watch(
   () => props.isOpen,
   async (isOpen) => {
@@ -174,9 +191,10 @@ onBeforeUnmount(() => {
   document.removeEventListener("keydown", handleKeydown);
 });
 
+/* Close Modal */
 const closeModal = () => emit("close");
 
-/* 🔍 Image Viewer Logic */
+/* Fullscreen Image Viewer */
 const showViewer = ref(false);
 const openImageViewer = () => {
   stopImageRotation();
@@ -187,6 +205,7 @@ const closeImageViewer = () => {
   startImageRotation();
 };
 
+/* Navigation */
 const nextImage = () => {
   currentIndex.value = (currentIndex.value + 1) % images.value.length;
 };
@@ -195,7 +214,7 @@ const prevImage = () => {
     (currentIndex.value - 1 + images.value.length) % images.value.length;
 };
 
-/* 🧭 Swipe Gestures */
+/* Swipe Gestures */
 let touchStartX = 0;
 const handleTouchStart = (e) => {
   touchStartX = e.touches[0].clientX;
@@ -208,7 +227,7 @@ const handleTouchMove = (e) => {
   }
 };
 
-/* ⌨ Keyboard Events */
+/* Keyboard Support */
 const handleKeydown = (e) => {
   if (!props.isOpen) return;
   if (showViewer.value) {
