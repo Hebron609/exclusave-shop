@@ -77,7 +77,7 @@
       >
         <button
           @click="closeImageViewer"
-          class="absolute text-3xl font-bold text-white cursor-pointer top-5 right-6 hover:opacity-80"
+          class="absolute text-2xl font-bold text-white cursor-pointer sm:text-3xl top-5 right-6 hover:opacity-80"
         >
           ✕
         </button>
@@ -85,7 +85,7 @@
         <button
           v-if="images.length > 1"
           @click.stop="prevImage"
-          class="absolute p-6 text-5xl text-white rounded-full cursor-pointer bg-gray-800/50 hover:bg-gray-800 left-4"
+          class="absolute p-2 text-5xl text-white rounded-full cursor-pointer left-10 sm:p-6 bg-gray-800/50 hover:bg-gray-800 sm:left-4"
         >
           ‹
         </button>
@@ -100,7 +100,7 @@
         <button
           v-if="images.length > 1"
           @click.stop="nextImage"
-          class="absolute p-6 text-5xl text-white rounded-full cursor-pointer bg-gray-800/50 hover:bg-gray-800 right-4"
+          class="absolute p-2 text-5xl text-white rounded-full cursor-pointer right-10 sm:p-6 bg-gray-800/50 hover:bg-gray-800 sm:right-4"
         >
           ›
         </button>
