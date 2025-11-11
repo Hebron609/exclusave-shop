@@ -117,14 +117,6 @@ export default {
         },
       ],
 
-      clientLogos: [
-        new URL("../assets/img/exclu-save-hero-section.jpg", import.meta.url).href,
-        new URL("../assets/img/exclu-save-hero-section.jpg", import.meta.url).href,
-        new URL("../assets/img/exclu-save-hero-section.jpg", import.meta.url).href,
-        new URL("../assets/img/exclu-save-hero-section.jpg", import.meta.url).href,
-        new URL("../assets/img/exclu-save-hero-section.jpg", import.meta.url).href,
-      ],
-
       currentIndex: 0,
     };
   },

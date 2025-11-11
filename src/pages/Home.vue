@@ -6,6 +6,7 @@
     <TestimonialSection />
     <Collections />
     <SampleCollection />
+    <PromoModal />
 
 <!--What-makes-us-stand-out-->
 <section class="max-w-[1440px] mx-auto px-6 py-20">
@@ -85,4 +86,5 @@ import TestimonialSection from "@/components/TestimonialSection.vue"
 import Collections from "@/components/Collections.vue"
 import SampleCollection from "@/components/SampleCollection.vue"
 import Footer from "@/components/Footer.vue"
+import PromoModal from "@/components/PromoModal.vue"
 </script>

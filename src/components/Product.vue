@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="flex flex-col items-start justify-between mb-10 md:flex-row">
       <div>
-        <h2 class="text-2xl font-bold text-gray-900">Most Popular</h2>
+        <h2 class="text-xl font-semibold text-gray-900">Most Popular</h2>
         <p class="mt-1 text-sm text-gray-500">
           Discover what’s trending — our most-loved products handpicked just for you.
         </p>

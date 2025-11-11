@@ -32,6 +32,8 @@ export default defineConfig({
         productList: path.resolve(__dirname, "products.html"),
         collections: path.resolve(__dirname, "collections.html"),
         support: path.resolve(__dirname, "support.html"),
+        promo: path.resolve(__dirname, "promo.html"),
+        exclusiveServices: path.resolve(__dirname, "exclusive-services.html"),
       },
     },
   },
