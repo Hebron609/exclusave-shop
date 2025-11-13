@@ -90,7 +90,7 @@
         >
           <li>
             <a
-              href="index.html"
+              href="#"
               :class="linkClass('index.html')"
               >Home</a
             >
