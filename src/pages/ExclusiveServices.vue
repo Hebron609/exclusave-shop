@@ -2,162 +2,161 @@
   <div class="relative pb-9">
     <!-- Gradient Homepage Navbar -->
     <nav
-  :class="[
-    'fixed w-full z-50 transition-all duration-500',
-    isScrolled ? 'bg-white shadow-md' : 'bg-gradient-to-r from-red-600 to-black text-white'
-  ]"
->
-  <div
-    class="max-w-[1440px] mx-auto flex items-center justify-between px-6 py-4 font-montserrat"
-  >
-    <!-- Logo -->
-    <div class="text-2xl font-bold cursor-pointer">
-      <span :class="isScrolled ? 'text-red-600' : 'text-white'">Exclu</span>
-      <span :class="isScrolled ? 'text-black' : 'text-white'">Save</span>
-    </div>
+      :class="[
+        'fixed w-full z-50 transition-all duration-500',
+        isScrolled
+          ? 'bg-white shadow-md'
+          : 'bg-gradient-to-r from-red-600 to-black text-white',
+      ]"
+    >
+      <div
+        class="max-w-[1440px] mx-auto flex items-center justify-between px-6 py-4 font-montserrat"
+      >
+        <!-- Logo -->
+        <div class="text-2xl font-bold cursor-pointer" @click="goHome">
+          <span :class="isScrolled ? 'text-red-600' : 'text-white'">Exclu</span>
+          <span :class="isScrolled ? 'text-black' : 'text-white'">Save</span>
+        </div>
 
-    <!-- Links: visible on wide screens, hidden on <=1127px via custom-hide-nav -->
-    <ul class="items-center hidden space-x-6 md:flex custom-hide-nav">
-      <li v-for="link in navLinks" :key="link.name">
-        <a
-          :href="link.href"
-          class="relative px-1 transition-all hover:text-red-600"
-          :class="activeLink === link.name
-            ? 'after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-red-600 after:rounded-full'
-            : ''"
-        >
-          {{ link.name }}
-        </a>
-      </li>
-      <li>
+        <!-- Links: visible on wide screens, hidden on <=1127px via custom-hide-nav -->
+        <ul class="items-center hidden space-x-6 md:flex custom-hide-nav">
+          <li v-for="link in navLinks" :key="link.name">
+            <a
+              :href="link.href"
+              class="relative px-1 transition-all hover:text-red-600"
+              :class="
+                activeLink === link.name
+                  ? 'after:absolute after:bottom-[-5px] after:left-0 after:w-full after:h-0.5 after:bg-red-600 after:rounded-full'
+                  : ''
+              "
+            >
+              {{ link.name }}
+            </a>
+          </li>
+          <li>
+            <button
+              class="px-5 py-2 font-semibold text-white rounded-full cursor-pointer bg-gradient-to-r from-red-600 to-black hover:opacity-90 animate-fadeInUp"
+            >
+              Get Started
+            </button>
+          </li>
+        </ul>
+
+        <!-- Hamburger button: hidden by default, shown on <=1127px via custom-show-nav -->
         <button
-          class="px-5 py-2 font-semibold text-white rounded-full cursor-pointer bg-gradient-to-r from-red-600 to-black hover:opacity-90 animate-fadeInUp"
+          class="hidden cursor-pointer md:hidden custom-show-nav"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+          aria-label="Open menu"
         >
-          Get Started
+          <span v-if="!mobileMenuOpen">&#9776;</span>
+          <span v-else>&#10005;</span>
         </button>
-      </li>
-    </ul>
+      </div>
 
-    <!-- Hamburger button: hidden by default, shown on <=1127px via custom-show-nav -->
-    <button
-      class="hidden cursor-pointer md:hidden custom-show-nav"
-      @click="mobileMenuOpen = !mobileMenuOpen"
-      aria-label="Open menu"
-    >
-      <span v-if="!mobileMenuOpen">&#9776;</span>
-      <span v-else>&#10005;</span>
-    </button>
-  </div>
-
-  <!-- Mobile Slide-down Menu -->
-  <transition name="slide-fade">
-    <div
-      v-if="mobileMenuOpen"
-      class="absolute left-0 w-full p-6 space-y-4 bg-white shadow-lg md:hidden top-full custom-mobile-menu"
-    >
-      <ul class="flex flex-col space-y-4">
-        <li v-for="link in navLinks" :key="'mobile-' + link.name">
-          <a
-            :href="link.href"
-            class="block font-semibold text-gray-900 hover:text-red-600"
-          >
-            {{ link.name }}
-          </a>
-        </li>
-        <li>
-          <button
-            class="px-5 py-2 font-semibold text-white rounded-full bg-gradient-to-r from-red-600 to-black hover:opacity-90"
-          >
-            Get Started
-          </button>
-        </li>
-      </ul>
-    </div>
-  </transition>
-</nav>
-
+      <!-- Mobile Slide-down Menu -->
+      <transition name="slide-fade">
+        <div
+          v-if="mobileMenuOpen"
+          class="absolute left-0 w-full p-6 space-y-4 bg-white shadow-lg md:hidden top-full custom-mobile-menu"
+        >
+          <ul class="flex flex-col space-y-4">
+            <li v-for="link in navLinks" :key="'mobile-' + link.name">
+              <a
+                :href="link.href"
+                class="block font-semibold text-gray-900 hover:text-red-600"
+              >
+                {{ link.name }}
+              </a>
+            </li>
+            <li>
+              <button
+                class="px-5 py-2 font-semibold text-white rounded-full bg-gradient-to-r from-red-600 to-black hover:opacity-90"
+              >
+                Get Started
+              </button>
+            </li>
+          </ul>
+        </div>
+      </transition>
+    </nav>
 
     <!-- Spacer for Navbar -->
     <div class="h-[100px]"></div>
 
-<!-- Hero Carousel -->
-<section
-  class="carousel-responsive relative overflow-hidden rounded-3xl font-montserrat h-[500px] sm:h-[530px] max-w-[1440px] mt-4"
->
-  <div
-    v-for="(slide, index) in slides"
-    :key="index"
-    class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-    :class="{
-      'opacity-100 z-10 animate-kenBurn': currentSlide === index,
-      'opacity-0 z-0': currentSlide !== index
-    }"
-  >
-    <img
-      :src="slide.image"
-      alt="banner"
-      class="object-cover w-full h-full rounded-3xl brightness-85"
-    />
-    <div class="absolute inset-0 bg-black/40 rounded-3xl"></div>
-
-    <!-- Text Overlay (re-animates each slide change) -->
-    <div
-      v-if="currentSlide === index"
-      :key="currentSlide"
-      class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white animate-fadeInUp"
+    <!-- Hero Carousel -->
+    <section
+      class="carousel-responsive relative overflow-hidden rounded-3xl font-montserrat h-[500px] sm:h-[530px] max-w-[1440px] mt-4"
     >
-      <h1
-        class="mb-4 text-3xl font-semibold sm:text-4xl drop-shadow-lg"
+      <div
+        v-for="(slide, index) in slides"
+        :key="index"
+        class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+        :class="{
+          'opacity-100 z-10 animate-kenBurn': currentSlide === index,
+          'opacity-0 z-0': currentSlide !== index,
+        }"
       >
-        {{ slide.title }}
-      </h1>
-      <p
-        class="max-w-2xl mx-auto mb-6 text-base delay-100 sm:text-lg drop-shadow-md"
-      >
-        {{ slide.subtitle }}
-      </p>
+        <img
+          :src="slide.image"
+          alt="banner"
+          class="object-cover w-full h-full rounded-3xl brightness-85"
+        />
+        <div class="absolute inset-0 bg-black/40 rounded-3xl"></div>
+
+        <!-- Text Overlay (re-animates each slide change) -->
+        <div
+          v-if="currentSlide === index"
+          :key="currentSlide"
+          class="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white animate-fadeInUp"
+        >
+          <h1 class="mb-4 text-3xl font-semibold sm:text-4xl drop-shadow-lg">
+            {{ slide.title }}
+          </h1>
+          <p
+            class="max-w-2xl mx-auto mb-6 text-base delay-100 sm:text-lg drop-shadow-md"
+          >
+            {{ slide.subtitle }}
+          </p>
+          <button
+            class="px-10 py-3 font-semibold text-white transition-all duration-300 border-2 border-white cursor-pointer hover:bg-white hover:text-black"
+          >
+            {{ slide.buttonText }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Left/Right Arrows -->
       <button
-        class="px-10 py-3 font-semibold text-white transition-all duration-300 border-2 border-white cursor-pointer hover:bg-white hover:text-black"
+        @click="prevSlide"
+        class="absolute z-20 p-3 text-white transform -translate-y-1/2 rounded-full cursor-pointer left-4 top-1/2 bg-black/40 hover:bg-black/60"
       >
-        {{ slide.buttonText }}
+        &#10094;
       </button>
-    </div>
-  </div>
+      <button
+        @click="nextSlide"
+        class="absolute z-20 p-3 text-white transform -translate-y-1/2 rounded-full cursor-pointer right-4 top-1/2 bg-black/40 hover:bg-black/60"
+      >
+        &#10095;
+      </button>
 
-  <!-- Left/Right Arrows -->
-  <button
-    @click="prevSlide"
-    class="absolute z-20 p-3 text-white transform -translate-y-1/2 rounded-full cursor-pointer left-4 top-1/2 bg-black/40 hover:bg-black/60"
-  >
-    &#10094;
-  </button>
-  <button
-    @click="nextSlide"
-    class="absolute z-20 p-3 text-white transform -translate-y-1/2 rounded-full cursor-pointer right-4 top-1/2 bg-black/40 hover:bg-black/60"
-  >
-    &#10095;
-  </button>
-
-  <!-- Dots -->
-  <div
-    class="absolute left-0 right-0 z-20 flex justify-center space-x-3 bottom-6"
-  >
-    <button
-      v-for="(slide, index) in slides"
-      :key="'dot-' + index"
-      @click="goToSlide(index)"
-      :class="[ 'w-3 h-3 rounded-full transition-all',
-        currentSlide === index ? 'bg-white scale-110' : 'bg-white/50'
-      ]"
-    ></button>
-  </div>
-</section>
-
+      <!-- Dots -->
+      <div
+        class="absolute left-0 right-0 z-20 flex justify-center space-x-3 bottom-6"
+      >
+        <button
+          v-for="(slide, index) in slides"
+          :key="'dot-' + index"
+          @click="goToSlide(index)"
+          :class="[
+            'w-3 h-3 rounded-full transition-all',
+            currentSlide === index ? 'bg-white scale-110' : 'bg-white/50',
+          ]"
+        ></button>
+      </div>
+    </section>
 
     <!-- Categories Section -->
-    <section
-      class="px-4 py-16 mx-auto max-w-[1440px] font-montserrat"
-    >
+    <section class="px-4 py-16 mx-auto max-w-[1440px] font-montserrat">
       <div class="space-y-20">
         <div v-for="category in categories" :key="category.title">
           <h2
@@ -166,9 +165,7 @@
             {{ category.title }}
           </h2>
 
-          <div
-            class="flex gap-6 pb-4 mt-8 overflow-x-auto scrollbar-hide"
-          >
+          <div class="flex gap-6 pb-4 mt-8 overflow-x-auto scrollbar-hide">
             <div
               v-for="item in category.items"
               :key="item.id"
@@ -235,7 +232,7 @@
                 'p-2 rounded-xl',
                 msg.type === 'user'
                   ? 'bg-red-600 text-white self-end'
-                  : 'bg-gray-100 text-gray-900'
+                  : 'bg-gray-100 text-gray-900',
               ]"
             >
               {{ msg.text }}
@@ -267,18 +264,17 @@ const interval = ref(null);
 const mobileMenuOpen = ref(false);
 const isScrolled = ref(false);
 const activeLink = ref("Home");
+const goHome = () => {
+  window.location.href = "index.html";
+};
 
 const chatOpen = ref(false);
 const chatInput = ref("");
-const chatMessages = ref([
-  { text: "Hi! How can we help you today?", type: "system" },
-]);
 
 const slides = [
   {
     title: "AFFORDABLE DATA",
-    subtitle:
-      "Fast delivery data at affordable prices",
+    subtitle: "Fast delivery data at affordable prices",
     buttonText: "SHOP NOW",
     image: "/images/bundle-banner.jpg",
   },
@@ -313,9 +309,24 @@ const categories = [
         image: "/images/mtn.jpeg",
         badge: "Hot",
       },
-      { id: 2, name: "AirtelTigo", price: "3.80 - 111.00", image: "/images/AIrtelTigo.webp" },
-      { id: 3, name: "Telecel Non-Expiry", price: "41.00 - 362.00", image: "/images/telecel.png" },
-      { id: 4, name: "Airtime", price: "5 - 100", image: "/images/airtime.jpg" },
+      {
+        id: 2,
+        name: "AirtelTigo",
+        price: "3.80 - 111.00",
+        image: "/images/AIrtelTigo.webp",
+      },
+      {
+        id: 3,
+        name: "Telecel Non-Expiry",
+        price: "41.00 - 362.00",
+        image: "/images/telecel.png",
+      },
+      {
+        id: 4,
+        name: "Airtime",
+        price: "5 - 100",
+        image: "/images/airtime.jpg",
+      },
     ],
   },
   {
@@ -324,13 +335,23 @@ const categories = [
       { id: 1, name: "Netflix", price: "33.00", image: "/images/netflix.jpg" },
       { id: 2, name: "Showmax", price: "40.00", image: "/images/showmax.jpg" },
       { id: 3, name: "Spotify", price: "20.00", image: "/images/spotify.jpg" },
-      { id: 4, name: "DSTV Stream", price: "110.00 - 155.00", image: "/images/dstv.png" },
+      {
+        id: 4,
+        name: "DSTV Stream",
+        price: "110.00 - 155.00",
+        image: "/images/dstv.png",
+      },
     ],
   },
   {
     title: "Others",
     items: [
-      { id: 1, name: "WAEC Checker", price: "17.00", image: "/images/waec.webp" },
+      {
+        id: 1,
+        name: "WAEC Checker",
+        price: "17.00",
+        image: "/images/waec.webp",
+      },
       { id: 2, name: "Router", price: "435.00", image: "/images/router.webp" },
     ],
   },
@@ -366,16 +387,17 @@ const nextSlide = () =>
   (currentSlide.value = (currentSlide.value + 1) % slides.length);
 const sendMessage = () => {
   if (!chatInput.value.trim()) return;
-  chatMessages.value.push({ text: chatInput.value, type: "user" });
+
+  const message = encodeURIComponent(chatInput.value);
+  const phone = "233591063119"; // your WhatsApp number (example)
+
+  const url = `https://wa.me/${phone}?text=${message}`;
+
+  // open WhatsApp
+  window.open(url, "_blank");
+
+  // Clear the input
   chatInput.value = "";
-  setTimeout(
-    () =>
-      chatMessages.value.push({
-        text: "Thanks for your message! Our team will respond shortly.",
-        type: "system",
-      }),
-    1000
-  );
 };
 </script>
 
@@ -438,18 +460,26 @@ const sendMessage = () => {
      - show hamburger (.custom-show-nav)
      - ensure mobile menu (.custom-mobile-menu) is usable for those sizes
   */
-  @media (max-width: 1127px) {
-    .custom-hide-nav { display: none !important; }
-    .custom-show-nav { display: inline-flex !important; }
-    .custom-mobile-menu { display: block !important; }
+@media (max-width: 1127px) {
+  .custom-hide-nav {
+    display: none !important;
   }
-
-  /* On wider screens (>1127px), hide the custom mobile menu just in case */
-  @media (min-width: 1128px) {
-    .custom-mobile-menu { display: none !important; }
+  .custom-show-nav {
+    display: inline-flex !important;
   }
+  .custom-mobile-menu {
+    display: block !important;
+  }
+}
 
-  /* Responsive outer margins for carousel:
+/* On wider screens (>1127px), hide the custom mobile menu just in case */
+@media (min-width: 1128px) {
+  .custom-mobile-menu {
+    display: none !important;
+  }
+}
+
+/* Responsive outer margins for carousel:
    - small screens: 1rem (like mx-4)
    - medium screens (>=768px): 2rem (like md:mx-8)
    - large screens (>=1128px): centered (margin auto)
